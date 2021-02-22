@@ -32,7 +32,7 @@ int main (int argc, char *argv[])
     //to ensure no duplicates are present
     for (int j = i + 1; j < cipher_len; j++)
     {
-      if (argv[1][i] == argv[1][j])
+      if (tolower(argv[1][i]) == tolower(argv[1][j]))
       {
         printf("Key must contain only one occurence of each letter.\n");
         return 1;
