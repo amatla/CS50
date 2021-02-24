@@ -33,6 +33,7 @@ void add_pairs(void);
 void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
+void print_matrix(void);
 
 int main(int argc, string argv[])
 {
@@ -90,6 +91,7 @@ int main(int argc, string argv[])
         printf("\n");
     }
 
+    print_matrix();
     add_pairs();
     sort_pairs();
     lock_pairs();
@@ -100,12 +102,11 @@ int main(int argc, string argv[])
 // Update ranks given a new vote
 bool vote(int rank, string name, int ranks[])
 {
-    //check if "name" is a valid candidate name
-    for (int i = 0; i < candidate_count; i++)
+    for (int i = 0; i < candidate_count; i++) 
     {
-        if (strcmp(name, candidates[i]) == 0)
+        if (strcmp(name, candidates[i]) == 0) //check if "name" is a valid candidate name
         {
-            ranks[rank] = i;
+            ranks[rank] = i; //upgrade rank with the candidate name index
             return true;
         }
     }
@@ -115,7 +116,13 @@ bool vote(int rank, string name, int ranks[])
 // Update preferences given one voter's ranks
 void record_preferences(int ranks[])
 {
-    // TODO
+    for (int i = 0;  i < candidate_count; i++)
+    {
+        for (int j = i + 1; j < candidate_count; j++)
+        {
+            preferences[ranks[i]][ranks[j]]++;
+        }
+    }
     return;
 }
 
@@ -147,3 +154,14 @@ void print_winner(void)
     return;
 }
 
+void print_matrix(void)
+{
+    for (int i = 0; i < candidate_count; i++)
+    {
+        for (int j = 0; j < candidate_count; j++)
+        {
+            printf("%d", preferences[i][j]);
+        }
+        printf("\n");
+    }
+}
