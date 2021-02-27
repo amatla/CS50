@@ -33,8 +33,7 @@ void add_pairs(void);
 void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
-void print_matrix(void);
-void print_pairs(void);
+bool is_circle(int, int);
 
 int main(int argc, string argv[])
 {
@@ -92,11 +91,8 @@ int main(int argc, string argv[])
         printf("\n");
     }
 
-    print_matrix(); //
     add_pairs();
-    print_pairs(); //
     sort_pairs();
-    print_pairs();
     lock_pairs();
     print_winner();
     return 0;
@@ -105,7 +101,7 @@ int main(int argc, string argv[])
 // Update ranks given a new vote
 bool vote(int rank, string name, int ranks[])
 {
-    for (int i = 0; i < candidate_count; i++) 
+    for (int i = 0; i < candidate_count; i++)
     {
         if (strcmp(name, candidates[i]) == 0) //check if "name" is a valid candidate name
         {
@@ -137,14 +133,14 @@ void add_pairs(void)
     {
         for (int j = i + 1; j < candidate_count; j++)
         {
-            //check if there is a winner in a pair and 
-            if(preferences[i][j] > preferences[j][i]) 
+            //check if there is a winner in the pair and update the pair count if there is.
+            if(preferences[i][j] > preferences[j][i])
             {
                 pairs[pair_count].winner = i;
                 pairs[pair_count].loser = j;
                 pair_count++;
             }
-            if(preferences[i][j] < preferences[j][i]) 
+            if(preferences[i][j] < preferences[j][i])
             {
                 pairs[pair_count].winner = j;
                 pairs[pair_count].loser = i;
@@ -178,35 +174,47 @@ void sort_pairs(void)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    // TODO
+    for (int i = 0; i < pair_count; i++)
+    {
+        locked[pairs[i].winner][pairs[i].loser] = true;
+        if ( (is_circle(pairs[i].winner, pairs[i].loser)) )
+        {
+            locked[pairs[i].winner][pairs[i].loser] = false;
+        }
+    }
     return;
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
     return;
 }
 
-void print_matrix(void)
+//determine if a circle is created adding the next pair.
+bool is_circle(int winner, int loser)
 {
+    //base condition to end the recursion if we find a circle.
+    if (loser == winner)
+    {
+        return true;
+    }
+
+    //check on the loser row to see if locked paths exists
+    //if they do explore them and check if they form a circle
+    //by calling is_circle() with the index of the locked path.
     for (int i = 0; i < candidate_count; i++)
     {
-        for (int j = 0; j < candidate_count; j++)
+        if (locked[loser][i])
         {
-            printf("%d", preferences[i][j]);
+           if (is_circle(winner, i))
+           {
+               return true;
+           }
         }
-        printf("\n");
     }
+    //if no circle is found return false.
+    return false;
 }
 
-void print_pairs(void)
-{
-    for (int i = 0; i < pair_count; i++)
-    {
-        printf("Pair: %d\n", i+1);
-        printf("Winner: %s - votes %d\n", candidates[pairs[i].winner], preferences[pairs[i].winner][pairs[i].loser]);
-        printf("Loser: %s - votes %d\n", candidates[pairs[i].loser], preferences[pairs[i].loser][pairs[i].winner]);
-    }
-}
+
