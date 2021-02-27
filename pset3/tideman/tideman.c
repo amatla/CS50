@@ -134,13 +134,13 @@ void add_pairs(void)
         for (int j = i + 1; j < candidate_count; j++)
         {
             //check if there is a winner in the pair and update the pair count if there is.
-            if(preferences[i][j] > preferences[j][i])
+            if (preferences[i][j] > preferences[j][i])
             {
                 pairs[pair_count].winner = i;
                 pairs[pair_count].loser = j;
                 pair_count++;
             }
-            if(preferences[i][j] < preferences[j][i])
+            if (preferences[i][j] < preferences[j][i])
             {
                 pairs[pair_count].winner = j;
                 pairs[pair_count].loser = i;
@@ -155,17 +155,16 @@ void add_pairs(void)
 void sort_pairs(void)
 {
     pair tmp;
-
     for (int i = 0; i < pair_count; i++)
     {
         for (int j = i + 1; j < pair_count; j++)
         {
-            if(preferences[pairs[j].winner][pairs[j].loser] > preferences[pairs[i].winner][pairs[i].loser])
+            if (preferences[pairs[j].winner][pairs[j].loser] > preferences[pairs[i].winner][pairs[i].loser])
             {
                 tmp = pairs[i];
                 pairs[i] = pairs[j];
                 pairs[j] = tmp;
-             }
+            }
         }
     }
     return;
@@ -174,12 +173,14 @@ void sort_pairs(void)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
+    //for each pair
     for (int i = 0; i < pair_count; i++)
     {
+        //lock the pair and check if it created a circle
         locked[pairs[i].winner][pairs[i].loser] = true;
-        if ( (is_circle(pairs[i].winner, pairs[i].loser)) )
+        if (is_circle(pairs[i].winner, pairs[i].loser))
         {
-            locked[pairs[i].winner][pairs[i].loser] = false;
+            locked[pairs[i].winner][pairs[i].loser] = false; //remove the lock if a circle was created
         }
     }
     return;
@@ -188,6 +189,26 @@ void lock_pairs(void)
 // Print the winner of the election
 void print_winner(void)
 {
+    int locks = 0;
+
+    //iterate over every candidate column
+    //if the candidate has no locks, they are a source of the graph
+    //and we print their name(s).
+    for (int i = 0; i < candidate_count; i++)
+    {
+        locks = 0;
+        for (int j = 0; j < candidate_count; j++)
+        {
+            if (locked[j][i])
+            {
+                locks++;
+            }
+        }
+        if (locks == 0)
+        {
+            printf("%s\n", candidates[i]);
+        }
+    }
     return;
 }
 
@@ -207,14 +228,12 @@ bool is_circle(int winner, int loser)
     {
         if (locked[loser][i])
         {
-           if (is_circle(winner, i))
-           {
-               return true;
-           }
+            if (is_circle(winner, i))
+            {
+                return true;
+            }
         }
     }
     //if no circle is found return false.
     return false;
 }
-
-
