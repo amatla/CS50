@@ -156,7 +156,7 @@ void add_pairs(void)
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    sort();
+    bubble_sort();
     return;
 }
 
