@@ -39,13 +39,46 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
             image[i][width-1-j] = tmp;
         }
     }
-    }
     return;
 }
 
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
+    RGBTRIPLE copy[height][width];
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            copy[i][j] = image[i][j];
+        }
+    }
+    float neighbours, avgB, avgG, avgR;
+    neighbours = avgB = avgG = avgR = 0;
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            for(int k = i - 1; k <= i + 1; k++)
+            {
+                for(int l = j - 1; l <= j + 1; l++)
+                {
+                    //
+                    if(!((k < 0) || (l < 0) || (k >= height) || (l >= width)))
+                    {
+                        avgB += copy[k][l].rgbtBlue;
+                        avgG += copy[k][l].rgbtGreen;
+                        avgR += copy[k][l].rgbtRed;
+                        neighbours++;
+                    }
+                }
+            }
+            image[i][j].rgbtBlue = round(avgB/ neighbours);
+            image[i][j].rgbtGreen = round(avgG / neighbours);
+            image[i][j].rgbtRed = round(avgR / neighbours);
+            neighbours = avgB = avgG = avgR = 0;
+        }
+    }
     return;
 }
 
