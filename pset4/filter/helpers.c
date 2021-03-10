@@ -1,5 +1,6 @@
 #include "helpers.h"
 #include <math.h>
+#include <stdio.h>
 
 // Convert image to grayscale
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
@@ -21,6 +22,24 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
 // Reflect image horizontally
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
+    //if the image has an even width we iterate over half of it
+    //if the image has an odd width we leave the middle column unchanged
+    int half = (width % 2 == 0) ? (width/2) : (width-1) / 2;
+
+    RGBTRIPLE tmp;
+
+    //iterate over half of the image
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < half; j++)
+        {
+            //swap pixels from one side to the other 
+            tmp = image[i][j];
+            image[i][j] = image[i][width-1-j];
+            image[i][width-1-j] = tmp;
+        }
+    }
+    }
     return;
 }
 
