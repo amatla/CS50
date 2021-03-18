@@ -34,6 +34,8 @@ void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
 bool is_circle(int, int);
+void sort(void); //basic sorting function to sort pairs array
+void bubble_sort(void); //bubble sort function for pairs array
 
 int main(int argc, string argv[])
 {
@@ -154,19 +156,7 @@ void add_pairs(void)
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    pair tmp;
-    for (int i = 0; i < pair_count; i++)
-    {
-        for (int j = i + 1; j < pair_count; j++)
-        {
-            if (preferences[pairs[j].winner][pairs[j].loser] > preferences[pairs[i].winner][pairs[i].loser])
-            {
-                tmp = pairs[i];
-                pairs[i] = pairs[j];
-                pairs[j] = tmp;
-            }
-        }
-    }
+    bubble_sort();
     return;
 }
 
@@ -236,4 +226,41 @@ bool is_circle(int winner, int loser)
     }
     //if no circle is found return false.
     return false;
+}
+
+void sort(void)
+{
+    pair tmp;
+    for (int i = 0; i < pair_count; i++)
+    {
+        for (int j = i + 1; j < pair_count; j++)
+        {
+            if (preferences[pairs[j].winner][pairs[j].loser] > preferences[pairs[i].winner][pairs[i].loser])
+            {
+                tmp = pairs[i];
+                pairs[i] = pairs[j];
+                pairs[j] = tmp;
+            }
+        }
+    }
+}
+
+void bubble_sort(void)
+{
+    int swap = 1;
+    while (swap != 0)
+    {
+        swap = 0;
+        for(int i = 0; i < pair_count; i++)
+        {
+            int j = i + 1;
+            if(preferences[pairs[j].winner][pairs[j].loser] > preferences[pairs[i].winner][pairs[i].loser])
+            {
+                pair tmp = pairs[i];
+                pairs[i] = pairs[j];
+                pairs[j] = tmp;
+                swap++;
+            }
+        }
+    }
 }
