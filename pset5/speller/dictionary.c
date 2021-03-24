@@ -1,7 +1,10 @@
 // Implements a dictionary's functionality
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+#include <math.h>
+#include <string.h>
+#include <ctype.h>
 
 #include "dictionary.h"
 
@@ -36,21 +39,8 @@ unsigned int hash(const char *word)
 // Loads dictionary into memory, returning true if successful, else false
 bool load(const char *dictionary)
 {
-    //if it exist open dictionary file for reading
-    //return false if the file doesnt exist.
-    FILE *dict = fopen(dictionary, "r");
-    if (dict == NULL)
-      return false;
-    
-    fseek(dict, 0, SEEK_END);
-    long fsize = ftell(dict);
-    fseek(dict, 0, SEEK_SET);
-    char *buffer = malloc(fsize);
-    if (buffer == NULL)
-      return false;
-    fread(buffer, 1, fsize, dict);
-    fclose(dict);
-    return true;
+    // TODO
+    return false;
 }
 
 // Returns number of words in dictionary if loaded, else 0 if not yet loaded
