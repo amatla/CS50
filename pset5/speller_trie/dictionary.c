@@ -9,12 +9,14 @@
 
 #include "dictionary.h"
 
-// define number of symbols in our alphabet
+// define number of symbols in our alphabet 26 for the letters and one for the apostrophe
 #define SYMBOLS 27
 
+// trie node definition
 typedef struct trieNode
 {
     struct trieNode *children[SYMBOLS];
+    // if the node represent the end of a word
     bool isEnd;
 }
 trieNode;
@@ -25,11 +27,12 @@ unsigned int word_count = 0;
 // dictionary already loaded or not
 bool loaded = false;
 
+// creates a new trie node
 trieNode* makeNode(void);
-void addWord(trieNode *head, char *word);
+// free a trie structure given the a pointer to its root
 void freeTrie(trieNode *head);
-void printTrie(trieNode *head, char *word, int index);
 
+// pointer to the root of the trie
 trieNode *root = NULL;
 
 // Returns true if word is in dictionary, else false
@@ -37,6 +40,7 @@ bool check(const char *word)
 {
     int len = strlen(word);
     trieNode *tmp = root;
+
     for (int i = 0; i < len; i++)
     {
         int index = (word[i] == '\'') ? 26 : tolower(word[i]) - 'a';
@@ -55,7 +59,7 @@ bool check(const char *word)
 // Hashes word to a number
 unsigned int hash(const char *word)
 {
-    // TODO
+    // not needed for a trie implementation
     return 0;
 }
 
@@ -98,11 +102,18 @@ bool load(const char *dictionary)
     }
     loaded = true;
 
+    // create root node
     root = makeNode();
-    trieNode *tmp = root;
 
+    // pointer we will use to traverse and build the trie structure
+    trieNode *tmp = root;
+    
+    // iterate over each char in buffer
     for (int i= 0; i < fsize; i++)
     {
+        // when we reach the end of a word
+        // set isEnd to true, increase word count
+        // and reset the pointer to the root of the trie
         if (buffer[i] == '\n')
         {
             tmp->isEnd = true;
@@ -111,20 +122,26 @@ bool load(const char *dictionary)
         }
         else
         {
+            // get a index based on the current char
             int index = (buffer[i] == '\'') ? 26 : tolower(buffer[i]) - 'a';
+
+            // if there is no node at the current location
+            // create one and move the pointer to it
             if (tmp->children[index] == NULL)
             {
                 tmp->children[index] = makeNode();
                 tmp = tmp->children[index];
             }
+            // if there is already a node move the pointer to it
             else
             {
                 tmp = tmp->children[index];
             }
         }
     }
-    //char word[LENGTH + 1];
-    //printTrie(root, word, 0);
+
+    // once we are done creating the trie structure
+    // free the dictionary buffer
     free(buffer);
     return true;
 }
@@ -147,6 +164,7 @@ bool unload(void)
     return false;
 }
 
+// creates a trie node and returns a pointer to it
 trieNode* makeNode(void)
 {
     trieNode *node = (trieNode *)malloc(sizeof(trieNode));
@@ -158,21 +176,7 @@ trieNode* makeNode(void)
     return node;
 }
 
-void addWord(trieNode *head, char *word)
-{
-    int len = strlen(word);
-    for(int i = 0; i < len; i++)
-    {
-        int index = (tolower(word[i]) - 'a');
-        if (head->children[index] == NULL)
-        {
-            head->children[index] = makeNode();
-        }
-        head = head->children[index];
-    }
-    head->isEnd = true;
-}
-
+// frees a tire given a pointer to its root node
 void freeTrie(trieNode *head)
 {
     for (int i = 0; i < SYMBOLS; i++)
@@ -183,22 +187,5 @@ void freeTrie(trieNode *head)
         }
     }
     free(head);
-}
-
-void printTrie(trieNode *head, char *word, int index)
-{
-    if (head->isEnd)
-    {
-        word[index] = '\0';
-        printf("%s\n", word);
-    }
-    for (int i = 0; i < SYMBOLS; i++)
-    {
-        if (head->children[i] != NULL)
-        {
-            word[index] = i + 'a';
-            printTrie(head->children[i], word, index + 1);
-        }
-    }
 }
 
