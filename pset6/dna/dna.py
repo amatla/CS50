@@ -49,10 +49,10 @@ def count_sub(dna, sub):
         # if we find a match for our substring - reset the current counter
         if dna[start:start+sub_len] == sub:
             tmp_count = 0
-        # count how many consecutive occurrences we find
-        while dna[start:start+sub_len] == sub:
-            tmp_count += 1
-            start += sub_len
+            # count how many consecutive occurrences we find
+            while dna[start:start+sub_len] == sub:
+                tmp_count += 1
+                start += sub_len
             # update counter if we find a bigger number of consecutive occurrences
             if tmp_count > count:
                 count = tmp_count
